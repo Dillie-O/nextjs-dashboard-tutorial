@@ -58,6 +58,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
         VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
     `;
     } catch (error) {
+        console.error('Failed to create invoice:', error);
         return {
             message: `Database Error: Failed to create Invoice.`,
         };
@@ -85,6 +86,7 @@ export async function updateInvoice(id: string, formData: FormData) {
             WHERE id = ${id}
         `;
     } catch (error) {
+        console.error('Failed to update invoice:', error);
         return {
             message: `Database Error: Failed to update Invoice.`,
         };
@@ -96,14 +98,12 @@ export async function updateInvoice(id: string, formData: FormData) {
 }
 
 export async function deleteInvoice(id: string) {
-
-    throw new Error('Failed to Delete Invoice: Testing.');
-
     try {
         await sql`DELETE FROM invoices WHERE id = ${id}`;
         revalidatePath('/dashboard/invoices');
         return { message: `Deleted Invoice.` };
     } catch (error) {
+        console.error('Failed to delete invoice:', error);
         return {
             message: `Database Error: Failed to delete Invoice.`,
         };
@@ -118,6 +118,7 @@ export async function authenticate(
         await signIn('credentials', formData);
     } catch (error) {
         if (error instanceof AuthError) {
+            console.error('Authentication Error:', error);
             switch (error.type) {
                 case 'CredentialsSignin':
                     return 'Invalid credentials.';
